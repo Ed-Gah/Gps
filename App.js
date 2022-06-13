@@ -13,6 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Walkthrough from "./src/screens/Walkthrough";
 import HomeScreen from "./src/screens/HomeScreen";
+import MainNavigator from "./src/navigation/MainNavigator";
+import { NativeBaseProvider } from "native-base";
 
 const Loading = () => {
   return (
@@ -22,6 +24,12 @@ const Loading = () => {
   );
 };
 
+const config = {
+  dependencies: {
+    "linear-gradient": require("expo-linear-gradient").LinearGradient,
+  },
+};
+
 export default function App() {
   const [loading, setLoading] = React.useState(true);
 
@@ -29,42 +37,27 @@ export default function App() {
 
   const checkOnboarding = async () => {
     try {
-      const value = await AsyncStorage.getItem('@viewedOnboarding');
+      const value = await AsyncStorage.getItem("@viewedOnboarding");
 
-      if(value!=null){
-        setViewdOnboarding(true)
+      if (value != null) {
+        setViewdOnboarding(true);
       }
     } catch (error) {
-      console.log('Error @checkOnboarding: ', error)
+      console.log("Error @checkOnboarding: ", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-  }
+  };
 
-  React.useEffect(()=> {
-    checkOnboarding()
-  })
+  React.useEffect(() => {
+    checkOnboarding();
+  });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <NativeBaseProvider config={config}>
       <StatusBar hidden={true} />
-      {loading ? (
-        <Loading />
-      ) : viewedOnboarding ? (
-        <HomeScreen />
-      ) : (
-        <Walkthrough />
-      )}
+      {loading ? <Loading /> : <MainNavigator />}
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

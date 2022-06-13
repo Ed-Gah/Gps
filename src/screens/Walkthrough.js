@@ -28,13 +28,14 @@ function Walkthrough() {
   }).current;
   const slideRef = React.useRef(null);
 
-//   const navigator = useNavigation();
+  const navigator = useNavigation();
 
   const scrollTo = async () => {
     if (currentIndex < walkthroughData.length - 1) {
       slideRef.current.scrollToIndex({ index: currentIndex + 1 });
     } else {
       try {
+        navigator.navigate("Login");
         await AsyncStorage.setItem("@viewedOnBoarding", "true");
       } catch (error) {
         console.log("error setting on boarding", error);
