@@ -33,7 +33,7 @@ const UpdateProfileScreen = (props) => {
         <TouchableOpacity
           style={styles.skipButton}
           onPress={() => {
-            navigation.navigate("Home");
+            navigation.navigate("Main");
           }}
         >
           <Text style={styles.skipText}>Skip</Text>
@@ -174,6 +174,8 @@ const UpdateProfileScreen = (props) => {
             }}
           />
         </Box>
+
+        {/* <DateTimePickerAndroid date={dob ? dob : null} /> */}
 
         <FormButton buttonTitle={"Update"} onPress={() => {}} />
       </KeyboardAvoidingView>

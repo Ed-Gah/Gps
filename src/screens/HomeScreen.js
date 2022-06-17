@@ -1,31 +1,45 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { Avatar, Box, ScrollView, Heading, Text } from "native-base";
 import InfoFlatList from "../components/InfoFlatList";
-import homeScreenFlatList from "../data/homeScreenFlatList";
+import { HomeBox } from "../components/HomeBox";
 
-const HomeScreen = (props) => {
-  console.log("flat list", homeScreenFlatList);
+export default function HomeScreen(props) {
+
   return (
-    <View style={styles.container}>
-      <View>
-        <FlatList
-          data={homeScreenFlatList}
-          renderItem={({ item }) => <InfoFlatList item={item} />}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
-    </View>
+    <ScrollView bgColor="gray.100">
+      <Heading ml={2} p={2}>
+        Hi! Edwin Gah,
+      </Heading>
+      <Text ml={2} p={2}>
+        How about today
+      </Text>
+      <Box bgColor="white">
+        <Box my={2}>
+          <ScrollView horizontal={true}>
+            <InfoFlatList
+              image={require("../../assets/slide1.png")}
+              title="Cutting prescription"
+              title1="doctor's cost"
+            />
+            <InfoFlatList
+              bgColor="orange.400"
+              image={require("../../assets/slide1.png")}
+              title="Covid causes"
+              title1="and prevention"
+            />
+            <InfoFlatList
+              bgColor="blue.400"
+              image={require("../../assets/slide1.png")}
+              title="General ways on "
+              title1="how to avoid them"
+            />
+          </ScrollView>
+        </Box>
+      </Box>
+      <Box mt={3}>
+        <HomeBox />
+      </Box>
+    </ScrollView>
   );
-};
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#d7d7d9",
-  },
-});
-export default HomeScreen;
+}
+// export default HomeScreen;
