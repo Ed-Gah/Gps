@@ -12,13 +12,14 @@ export const MainTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{
+        headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarInactiveTintColor: "#A8B0C9",
         tabBarActiveTintColor: "#4174ff",
         tabBarShowLabel: false,
         tabBarStyle: {
-          paddingBottom: 20,
-          height: 90,
+          paddingBottom: 2,
+          height: 60,
           backgroundColor: theme.colors.gray[200],
           color: theme.colors.primary[900],
         },
@@ -31,12 +32,12 @@ export const MainTabs = () => {
           paddingLeft: parseInt(theme.space["6"], 10),
         },
       }}
+      initialRouteName="Home"
     >
       <Tab.Screen
         name="Health"
         component={Doctors}
         options={{
-        //   headerShown: false,
           title: "Health",
           tabBarIcon: () => (
             <>

@@ -4,6 +4,11 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import FormButton from "../components/FormButton";
 import FormInput from "../components/FormInput";
 import SocialButton from "../components/SocialButtons";
+import { auth } from "../auth/Firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 const SignupScreen = (props) => {
   const [email, setEmail] = React.useState();
@@ -16,6 +21,20 @@ const SignupScreen = (props) => {
     } else {
       setPasswordMatch(false);
     }
+  };
+
+  const signUp = async () => {
+    setEmail("");
+    setPassword("");
+
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        alert("User created Successfully");
+        navigation.navigate("Login");
+      })
+      .catch((error) => {
+        alert(`${error.code} error creating user ${error.message}`);
+      });
   };
 
   const navigation = useNavigation();
@@ -65,12 +84,8 @@ const SignupScreen = (props) => {
       )}
       <FormButton
         buttonTitle={"Sign Up"}
-        backgroundColor={disabled ? '#cccccc' : "#493d8a"}
-        onPress={() => {
-          {
-            passwordMatch ? alert("Sign Up Clicked") : <></>;
-          }
-        }}
+        backgroundColor={disabled ? "#cccccc" : "#493d8a"}
+        onPress={signUp}
         disabled={disabled}
       />
       <SocialButton

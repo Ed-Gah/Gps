@@ -4,9 +4,8 @@ import InfoFlatList from "../components/InfoFlatList";
 import { HomeBox } from "../components/HomeBox";
 
 export default function HomeScreen(props) {
-
   return (
-    <ScrollView bgColor="gray.100">
+    <ScrollView bgColor="gray.100" marginTop={2}>
       <Heading ml={2} p={2}>
         Hi! Edwin Gah,
       </Heading>
@@ -15,7 +14,7 @@ export default function HomeScreen(props) {
       </Text>
       <Box bgColor="white">
         <Box my={2}>
-          <ScrollView horizontal={true}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <InfoFlatList
               image={require("../../assets/slide1.png")}
               title="Cutting prescription"
