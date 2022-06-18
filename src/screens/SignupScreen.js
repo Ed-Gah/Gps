@@ -25,6 +25,7 @@ const SignupScreen = (props) => {
       <Image
         source={require("../../assets/covid19Icon.png")}
         style={styles.logo}
+        alt="image"
       />
       <Text style={styles.text}>Declan's Covid 19 Tracker</Text>
       <FormInput

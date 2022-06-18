@@ -15,6 +15,7 @@ const LoginScreen = (props) => {
       <Image
         source={require("../../assets/covid19Icon.png")}
         style={styles.logo}
+        alt="logo"
       />
       <Text style={styles.text}>Declan's Covid 19 Tracker</Text>
       <FormInput

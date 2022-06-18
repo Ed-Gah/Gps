@@ -13,7 +13,7 @@ const InfoFlatList = ({ image, title, title1, bgColor }) => {
       my={6}
     >
       <HStack space={3}>
-        <Image source={image} size={100} my={2} />
+        <Image source={image} size={100} my={2} alt="image" />
         <VStack>
           <Heading color="white" textAlign="center" mt="auto" mr={6}>
             {title}

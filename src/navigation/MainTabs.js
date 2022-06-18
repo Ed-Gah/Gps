@@ -31,12 +31,13 @@ export const MainTabs = () => {
           paddingLeft: parseInt(theme.space["6"], 10),
         },
       }}
+      initialRouteName="Home"
     >
       <Tab.Screen
         name="Health"
         component={Doctors}
         options={{
-        //   headerShown: false,
+          //   headerShown: false,
           title: "Health",
           tabBarIcon: () => (
             <>
@@ -61,8 +62,7 @@ export const MainTabs = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          headerShown: false,
-          title: "",
+          title: "Home",
           tabBarIcon: () => (
             <>
               <FontAwesome5
@@ -86,8 +86,7 @@ export const MainTabs = () => {
         name="Map"
         component={Location}
         options={{
-          headerShown: false,
-          title: "",
+          title: "Map",
           tabBarIcon: () => (
             <>
               <FontAwesome5

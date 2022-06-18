@@ -41,6 +41,7 @@ const UpdateProfileScreen = (props) => {
         <Image
           source={require("../../assets/covid19Icon.png")}
           style={styles.logo}
+          alt="image"
         />
         <Text style={styles.text}>Update Your Profile</Text>
       </View>
