@@ -9,48 +9,78 @@ import {
   VStack,
   Text,
   Center,
+  theme,
 } from "native-base";
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-} from "react-native-chart-kit";
+import { LineChart, BarChart } from "react-native-chart-kit";
 import { TouchableOpacity, Dimensions } from "react-native";
-import { HomeBox } from "../components/HomeBox";
 import InfoFlatList from "../components/InfoFlatList";
+import { PatientsData } from "../components/PatientsData";
 
 const Doctors = ({ navigation }) => {
-  let [pulse, setPulse] = React.useState([37.2, 37.3, 37.4, 37.1, 37, 37.4]);
-  let [ecg, setEcg] = React.useState([37.2, 37.3, 37.4, 37.1, 37, 37.4]);
-  let [spo2, setSpo2] = React.useState([37.2, 37.3, 37.4, 37.1, 37, 37.4]);
-  let [temperature, setTemperature] = React.useState([
+  let [newPulse, setNewPulse] = React.useState([
+    37.2, 37.3, 37.4, 37.1, 37, 37.4,
+  ]);
+  let [newEcg, setNewEcg] = React.useState([37.2, 37.3, 37.4, 37.1, 37, 37.4]);
+  let [newSpo2, setNewSpo2] = React.useState([
+    37.2, 37.3, 37.4, 37.1, 37, 37.4,
+  ]);
+  let [newTemperature, setNewTemperature] = React.useState([
     37.2, 37.3, 37.4, 37.1, 37, 37.4,
   ]);
 
-  let value = 37.3;
+  let [temperature, setTemperature] = React.useState(0);
+  let [pulse, setPulse] = React.useState(0);
+  let [ecg, setEcg] = React.useState(0);
+  let [spo2, setSpo2] = React.useState(0);
+
+  React.useEffect(() => {
+    const getTemperature = async () => {
+      try {
+        const temperature = await axios.get(
+          "http://192.168.100.211/temperature"
+        );
+        const pulse = await axios.get("");
+        const ecg = await axios.get("");
+        const spo2 = await axios.get("");
+        setTemperature(temperature["data"]);
+        setPulse(pulse["data"]);
+        setEcg(ecg["data"]);
+        setSpo2(spo2["data"]);
+        console.log("the temperature is ", temperature["data"]);
+        console.log("the pulse is ", pulse["data"]);
+        console.log("the ecg is ", ecg["data"]);
+        console.log("the spo2 is ", spo2["data"]);
+      } catch {
+        (error) => {
+          console.log("error ", error);
+        };
+      }
+    };
+    getTemperature();
+  }, []);
+
+  let value = 37.4;
   React.useEffect(() => {
     const temperatureFetch = () => {
-      temperature.unshift(value);
+      newTemperature.unshift(value);
 
-      if (temperature.length > 6) {
-        const newTemperature = temperature.pop();
+      if (newTemperature.length > 6) {
+        const newTemp = newTemperature.pop();
         if (newTemperature) {
-          setTemperature(temperature);
-          console.log("New Temperature", temperature);
+          setTemperature(newTemperature);
+          console.log("New Temperature", newTemperature);
         }
       }
     };
     temperatureFetch();
-  }, []);
+  }, [value]);
 
-  console.log("State temperature", temperature);
+  console.log("State temperature", newTemperature);
 
   return (
     <ScrollView bgColor="white" mx={1}>
       <VStack mt={4} mx={4}>
-        <HStack justifyContent="space-between">
+        <HStack justifyContent="space-between" alignItems={"center"}>
           <Heading color="primary.700" ml={7}>
             Edwin Gah{" "}
           </Heading>
@@ -67,9 +97,90 @@ const Doctors = ({ navigation }) => {
             </Avatar>
           </TouchableOpacity>
         </HStack>
-        <Heading mt={10} color="secondary.500" ml={6}>
-          Current Data
-        </Heading>
+        <VStack>
+          <Center>
+            <Heading mt={10} color="secondary.500" ml={6}>
+              Current Data
+            </Heading>
+          </Center>
+          <Box mt={4} mx={2}>
+            <HStack justifyContent="space-between">
+              <VStack>
+                <Heading fontSize="sm" color={theme.colors.primary[700]}>
+                  Temperature
+                </Heading>
+                <Center>
+                  <HStack mt={1}>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      {temperature}
+                    </Heading>
+                    <Text fontSize="xs" color={theme.colors.green[400]}>
+                      0
+                    </Text>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      C
+                    </Heading>
+                  </HStack>
+                </Center>
+              </VStack>
+              <VStack>
+                <Heading fontSize="sm" color={theme.colors.primary[700]}>
+                  Pulse
+                </Heading>
+                <Center>
+                  <HStack mt={1}>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      {pulse}
+                    </Heading>
+                    <Text fontSize="xs" color={theme.colors.green[400]}>
+                      0
+                    </Text>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      C
+                    </Heading>
+                  </HStack>
+                </Center>
+              </VStack>
+              <VStack>
+                <Heading fontSize="sm" color={theme.colors.primary[700]}>
+                  ECG
+                </Heading>
+                <Center>
+                  <HStack mt={1}>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      {pulse}
+                    </Heading>
+                    <Text fontSize="xs" color={theme.colors.green[400]}>
+                      0
+                    </Text>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      C
+                    </Heading>
+                  </HStack>
+                </Center>
+              </VStack>
+              <VStack>
+                <Heading fontSize="sm" color={theme.colors.primary[700]}>
+                  SPO2
+                </Heading>
+                <Center>
+                  <HStack mt={1}>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      {pulse}
+                    </Heading>
+                    <Text fontSize="xs" color={theme.colors.green[400]}>
+                      0
+                    </Text>
+                    <Heading fontSize="xl" color={theme.colors.green[400]}>
+                      C
+                    </Heading>
+                  </HStack>
+                </Center>
+              </VStack>
+            </HStack>
+          </Box>
+          <PatientsData />
+        </VStack>
       </VStack>
       <Box mx={1}>
         <InfoFlatList
@@ -96,7 +207,7 @@ const Doctors = ({ navigation }) => {
                 labels: ["1min", "2min", "3min", "4min", "5min", "6min"],
                 datasets: [
                   {
-                    data: temperature,
+                    data: newTemperature,
                   },
                 ],
               }}
@@ -144,7 +255,7 @@ const Doctors = ({ navigation }) => {
             labels: ["1min", "2min", "3min", "4min", "5min", "6min"],
             datasets: [
               {
-                data: pulse,
+                data: newPulse,
               },
             ],
           }}
@@ -189,7 +300,7 @@ const Doctors = ({ navigation }) => {
             labels: ["1min", "2min", "3min", "4min", "5min", "6min"],
             datasets: [
               {
-                data: ecg,
+                data: newEcg,
               },
             ],
           }}
@@ -234,7 +345,7 @@ const Doctors = ({ navigation }) => {
             labels: ["1min", "2min", "3min", "4min", "5min", "6min"],
             datasets: [
               {
-                data: spo2,
+                data: newSpo2,
               },
             ],
           }}

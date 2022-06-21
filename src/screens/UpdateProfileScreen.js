@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, CheckIcon, Select } from "native-base";
-import React from "react";
+import React, { useReducer } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import {
 import FormButton from "../components/FormButton";
 import FormInput from "../components/FormInput";
 import DatePicker from "react-native-datepicker";
+import { auth, db } from "../auth/Firebase";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 
 const UpdateProfileScreen = (props) => {
   const navigation = useNavigation();
@@ -24,8 +26,43 @@ const UpdateProfileScreen = (props) => {
   const [datePicker, setDatePicker] = React.useState(false);
   const [weight, setWeight] = React.useState();
   const [height, setHeight] = React.useState();
+  const [userType, setUserType] = React.useState();
 
-  console.log("dob", dob);
+  const email = auth.currentUser.email;
+  const id = auth.currentUser.uid;
+
+  console.log("user id", id);
+
+  const formFilled =
+    fullname && gender && dob && blood && weight && height && userType;
+
+  const userDoc = doc(db, "users", id);
+
+  const updateUser = () => {
+    const user = {
+      email: email,
+      id: id,
+      fullname: fullname,
+      gender: gender,
+      dob: dob,
+      weight: weight,
+      height: height,
+      blood: blood,
+      userType: userType,
+      created: Timestamp.now(),
+    };
+
+    setDoc(userDoc, user)
+      .then((res) => {
+        alert("successfully updated doc");
+        console.log("response is ", res);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+    console.log("update user called");
+    console.log("user is ", user);
+  };
 
   return (
     <>
@@ -111,6 +148,31 @@ const UpdateProfileScreen = (props) => {
             <Select.Item label="Other" value="Other" />
           </Select>
         </Box>
+        <Box w="100%" h={10} mb={2}>
+          <Select
+            selectedValue={userType}
+            minW="200"
+            borderColor={"#ccc"}
+            borderRadius={"lg"}
+            color="black"
+            fontSize={14}
+            backgroundColor={"white"}
+            accessibilityLabel="User"
+            placeholder="User"
+            placeholderTextColor="#ccc"
+            _selectedItem={{
+              bg: "violet.900",
+              borderRadius: 15,
+              endIcon: <CheckIcon size="5" />,
+            }}
+            h={10}
+            onValueChange={(itemValue) => setUserType(itemValue)}
+          >
+            <Select.Item label="Patient" value="Patient" />
+            <Select.Item label="Doctor" value="Doctor" />
+            <Select.Item label="Carer" value="Carer" />
+          </Select>
+        </Box>
         <FormInput
           placeholder={"Weight"}
           onChangeText={(text) => {
@@ -178,7 +240,12 @@ const UpdateProfileScreen = (props) => {
 
         {/* <DateTimePickerAndroid date={dob ? dob : null} /> */}
 
-        <FormButton buttonTitle={"Update"} onPress={() => {}} />
+        <FormButton
+          buttonTitle={"Update"}
+          backgroundColor={!formFilled ? "#cccccc" : "#493d8a"}
+          onPress={updateUser}
+          disabled={!formFilled}
+        />
       </KeyboardAvoidingView>
     </>
   );

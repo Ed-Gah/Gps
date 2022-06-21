@@ -4,12 +4,24 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import FormButton from "../components/FormButton";
 import FormInput from "../components/FormInput";
 import SocialButton from "../components/SocialButtons";
-
+import { auth } from "../auth/Firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 const LoginScreen = (props) => {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
 
   const navigation = useNavigation();
+
+  const signIn = async () => {
+    await signInWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        alert("Sign in successfull");
+        navigation.navigate("Profile");
+      })
+      .catch((error) => {
+        alert(`${error.code} Sign in Error ${error.message}`);
+      });
+  };
   return (
     <View style={styles.container}>
       <Image
@@ -40,12 +52,7 @@ const LoginScreen = (props) => {
         secureTextEntry={true}
       />
 
-      <FormButton
-        buttonTitle={"Sign In"}
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-      />
+      <FormButton buttonTitle={"Sign In"} onPress={signIn} />
 
       <TouchableOpacity
         style={{ marginVertical: 10 }}
