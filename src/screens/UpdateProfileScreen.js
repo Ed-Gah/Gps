@@ -31,14 +31,12 @@ const UpdateProfileScreen = (props) => {
   const email = auth.currentUser.email;
   const id = auth.currentUser.uid;
 
-  console.log("user id", id);
-
   const formFilled =
     fullname && gender && dob && blood && weight && height && userType;
 
   const userDoc = doc(db, "users", id);
 
-  const updateUser = () => {
+  const updateUser = async () => {
     const user = {
       email: email,
       id: id,
@@ -52,16 +50,14 @@ const UpdateProfileScreen = (props) => {
       created: Timestamp.now(),
     };
 
-    setDoc(userDoc, user)
+    await setDoc(userDoc, user)
       .then((res) => {
         alert("successfully updated doc");
-        console.log("response is ", res);
+        navigation.navigate("Main");
       })
       .catch((error) => {
         alert(error);
       });
-    console.log("update user called");
-    console.log("user is ", user);
   };
 
   return (
@@ -191,50 +187,61 @@ const UpdateProfileScreen = (props) => {
           keyboardType="decimal-pad"
         />
         <Box w="100%" mx={4} py={1} borderColor="#ccc" mb={2}>
-          <DatePicker
-            date={dob ? dob : null}
-            mode="date"
-            placeholder="Date of Birth"
-            placeholderTextColor="black"
-            format="DD/MM/YYYY"
-            style={{
-              width: "100%",
-              height: 40,
-              justifyContent: "center",
-              color: "blue",
-              backgroundColor: "white",
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 10,
-            }}
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: "absolute",
-                right: -6,
-                top: 4,
-                marginLeft: 0,
-                borderWidth: 0,
-              },
-              dateInput: {
-                height: 100,
-                top: 1,
+          {Platform.OS === "ios" ? (
+            <DatePicker
+              date={dob ? dob : null}
+              mode="date"
+              placeholder="Date of Birth"
+              placeholderTextColor="black"
+              format="DD/MM/YYYY"
+              style={{
+                width: "100%",
+                height: 40,
+                justifyContent: "center",
+                color: "blue",
+                backgroundColor: "white",
+                borderWidth: 1,
+                borderColor: "#ccc",
                 borderRadius: 10,
-                borderWidth: 0,
-                alignItems: "flex-start",
-                alignContent: "flex-start",
-                padding: 10,
-              },
-              dateText: {
-                color: "black",
-              },
-            }}
-            onDateChange={(date) => {
-              // setDateObj(date);
-              setDob(date);
-            }}
-          />
+              }}
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: "absolute",
+                  right: -6,
+                  top: 4,
+                  marginLeft: 0,
+                  borderWidth: 0,
+                },
+                dateInput: {
+                  height: 100,
+                  top: 1,
+                  borderRadius: 10,
+                  borderWidth: 0,
+                  alignItems: "flex-start",
+                  alignContent: "flex-start",
+                  padding: 10,
+                },
+                dateText: {
+                  color: "black",
+                },
+              }}
+              onDateChange={(date) => {
+                // setDateObj(date);
+                setDob(date);
+              }}
+            />
+          ) : (
+            <FormInput
+              placeholder={"Date of Birth (DD/MM/YYYY)"}
+              onChangeText={(text) => {
+                setDob(Text);
+              }}
+              autoCorrect={false}
+              customHeight={40}
+            />
+          )}
         </Box>
 
         {/* <DateTimePickerAndroid date={dob ? dob : null} /> */}

@@ -20,14 +20,34 @@ import {
 import { TouchableOpacity, Dimensions } from "react-native";
 import { HomeBox } from "../components/HomeBox";
 import InfoFlatList from "../components/InfoFlatList";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../auth/Firebase";
 
 const Doctors = ({ navigation }) => {
+  const [userInfo, setUserInfo] = React.useState();
+  const id = auth.currentUser.uid;
+  const userRef = doc(db, "users", id);
+
+  let names;
+
+  React.useEffect(() => {
+    const getUserInfo = async () => {
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        console.log("Document data: ", docSnap.data());
+        setUserInfo(docSnap.data());
+      } else {
+        alert("Error Fetching user's information");
+      }
+    };
+    getUserInfo();
+  }, []);
   return (
     <ScrollView bgColor="white" mx={1}>
       <VStack mt={4} mx={4}>
         <HStack justifyContent="space-between" alignItems={"center"}>
           <Heading color="primary.700" ml={7}>
-            Edwin Gah{" "}
+            {userInfo?.fullname}{" "}
           </Heading>
           <TouchableOpacity
             mr="auto"
@@ -59,7 +79,10 @@ const Doctors = ({ navigation }) => {
       </Center>
       <Box>
         <Center>
-          <Text color="#FFAC44">EdGah live chart</Text>
+          <Text color="#FFAC44">
+            {userInfo?.fullname}
+            's live chart
+          </Text>
         </Center>
         <Box>
           <Text color="primary.700" ml={2}>
