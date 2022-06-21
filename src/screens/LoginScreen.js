@@ -4,11 +4,13 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import FormButton from "../components/FormButton";
 import FormInput from "../components/FormInput";
 import SocialButton from "../components/SocialButtons";
-import { auth } from "../auth/Firebase";
+import { auth, db } from "../auth/Firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 const LoginScreen = (props) => {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
+  const [user, setUser] = React.useState();
 
   const navigation = useNavigation();
 
@@ -16,7 +18,19 @@ const LoginScreen = (props) => {
     await signInWithEmailAndPassword(auth, email, password)
       .then((res) => {
         alert("Sign in successfull");
-        navigation.navigate("Profile");
+        const id = res._tokenResponse.localId;
+        const userRef = doc(db, "users", id);
+        const docSnap = getDoc(userRef)
+          .then((res) => {
+            if (res.data()) {
+              navigation.navigate("Main");
+            } else {
+              navigation.navigate("Profile");
+            }
+          })
+          .catch((error) => {
+            console.log("error ", error);
+          });
       })
       .catch((error) => {
         alert(`${error.code} Sign in Error ${error.message}`);

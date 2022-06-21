@@ -16,6 +16,7 @@ import walkthroughData from "../data/walkthroughData";
 import WalkThroughItem from "../components/WalkThroughItem";
 import Indicator from "../components/Indicator";
 import NextButton from "../components/NextButton";
+import { auth } from "../auth/Firebase";
 
 function Walkthrough() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -28,14 +29,19 @@ function Walkthrough() {
   }).current;
   const slideRef = React.useRef(null);
 
-  const navigator = useNavigation();
+  const navigation = useNavigation();
 
   const scrollTo = async () => {
     if (currentIndex < walkthroughData.length - 1) {
       slideRef.current.scrollToIndex({ index: currentIndex + 1 });
     } else {
       try {
-        navigator.navigate("Login");
+        user = auth.currentUser;
+        if (user) {
+          navigation.navigate("Main");
+        } else {
+          navigation.navigate("Login");
+        }
         await AsyncStorage.setItem("@viewedOnBoarding", "true");
       } catch (error) {
         console.log("error setting on boarding", error);

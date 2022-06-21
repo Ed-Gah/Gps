@@ -19,18 +19,8 @@ const firebaseConfig = {
   measurementId: "G-MTN0RNMWZG",
 };
 
-// Initialize Firebase
-// admin.initializeApp();
-// const firestore = admin.firestore();
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-// export const authOnCreate = functions.auth.user().onCreate(async (user) => {
-//   console.log(`Creating document for user ${user.uid}`);
-//   await Firestore.collection("users").doc(user.uid).set({
-//     createdAt: admin.firestore.FiledValue.serverTimestamp(),
-//   });
-// });
 
 export { auth, db };

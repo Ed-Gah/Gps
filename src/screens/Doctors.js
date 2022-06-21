@@ -15,6 +15,8 @@ import { LineChart, BarChart } from "react-native-chart-kit";
 import { TouchableOpacity, Dimensions } from "react-native";
 import InfoFlatList from "../components/InfoFlatList";
 import { PatientsData } from "../components/PatientsData";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../auth/Firebase";
 
 const Doctors = ({ navigation }) => {
   let [newPulse, setNewPulse] = React.useState([
@@ -27,6 +29,9 @@ const Doctors = ({ navigation }) => {
   let [newTemperature, setNewTemperature] = React.useState([
     37.2, 37.3, 37.4, 37.1, 37, 37.4,
   ]);
+  const [userInfo, setUserInfo] = React.useState();
+  const id = auth.currentUser.uid;
+  const userRef = doc(db, "users", id);
 
   let [temperature, setTemperature] = React.useState(0);
   let [pulse, setPulse] = React.useState(0);
@@ -59,30 +64,62 @@ const Doctors = ({ navigation }) => {
     getTemperature();
   }, []);
 
-  let value = 37.4;
+  let temValue = 37.2;
+  let pulseValue = 37.3;
+  let spo2Value = 37.5;
   React.useEffect(() => {
     const temperatureFetch = () => {
-      newTemperature.unshift(value);
+      newTemperature.unshift(temValue);
+      newPulse.unshift(pulseValue);
+      newSpo2.unshift(spo2Value);
 
       if (newTemperature.length > 6) {
         const newTemp = newTemperature.pop();
-        if (newTemperature) {
-          setTemperature(newTemperature);
+        if (newTemp) {
+          setNewTemperature(newTemperature);
           console.log("New Temperature", newTemperature);
+        }
+      }
+      if (newPulse.length > 6) {
+        const newPul = newPulse.pop();
+        if (newPul) {
+          setNewPulse(newPulse);
+          console.log("New Temperature", newPulse);
+        }
+      }
+      if (newSpo2.length > 6) {
+        const newSpo = newSpo2.pop();
+        if (newSpo) {
+          setNewTemperature(newSpo2);
+          console.log("New Temperature", newSpo2);
         }
       }
     };
     temperatureFetch();
-  }, [value]);
+  }, [temValue, pulseValue, spo2Value]);
 
   console.log("State temperature", newTemperature);
 
+  let names;
+
+  React.useEffect(() => {
+    const getUserInfo = async () => {
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        console.log("Document data: ", docSnap.data());
+        setUserInfo(docSnap.data());
+      } else {
+        alert("Error Fetching user's information");
+      }
+    };
+    getUserInfo();
+  }, []);
   return (
     <ScrollView bgColor="white" mx={1}>
       <VStack mt={4} mx={4}>
         <HStack justifyContent="space-between" alignItems={"center"}>
           <Heading color="primary.700" ml={7}>
-            Edwin Gah{" "}
+            {userInfo?.fullname}{" "}
           </Heading>
           <TouchableOpacity
             mr="auto"
@@ -132,11 +169,12 @@ const Doctors = ({ navigation }) => {
                     <Heading fontSize="xl" color={theme.colors.green[400]}>
                       {pulse}
                     </Heading>
-                    <Text fontSize="xs" color={theme.colors.green[400]}>
-                      0
-                    </Text>
-                    <Heading fontSize="xl" color={theme.colors.green[400]}>
-                      C
+                    <Heading
+                      mt={1}
+                      fontSize="sm"
+                      color={theme.colors.green[400]}
+                    >
+                      bpm
                     </Heading>
                   </HStack>
                 </Center>
@@ -150,12 +188,12 @@ const Doctors = ({ navigation }) => {
                     <Heading fontSize="xl" color={theme.colors.green[400]}>
                       {pulse}
                     </Heading>
-                    <Text fontSize="xs" color={theme.colors.green[400]}>
-                      0
+                    {/* <Text fontSize="xs" color={theme.colors.green[400]}>
+                      
                     </Text>
                     <Heading fontSize="xl" color={theme.colors.green[400]}>
-                      C
-                    </Heading>
+                      
+                    </Heading> */}
                   </HStack>
                 </Center>
               </VStack>
@@ -168,18 +206,18 @@ const Doctors = ({ navigation }) => {
                     <Heading fontSize="xl" color={theme.colors.green[400]}>
                       {pulse}
                     </Heading>
-                    <Text fontSize="xs" color={theme.colors.green[400]}>
-                      0
-                    </Text>
-                    <Heading fontSize="xl" color={theme.colors.green[400]}>
-                      C
+                    <Heading
+                      mt={1}
+                      fontSize="md"
+                      color={theme.colors.green[400]}
+                    >
+                      %
                     </Heading>
                   </HStack>
                 </Center>
               </VStack>
             </HStack>
           </Box>
-          <PatientsData />
         </VStack>
       </VStack>
       <Box mx={1}>
@@ -195,7 +233,10 @@ const Doctors = ({ navigation }) => {
       </Center>
       <Box>
         <Center>
-          <Text color="#FFAC44">EdGah live chart</Text>
+          <Text color="#FFAC44">
+            {userInfo?.fullname}
+            's live chart
+          </Text>
         </Center>
         <Box>
           <Text color="primary.700" ml={2}>
